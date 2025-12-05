@@ -31,8 +31,21 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: './assets/favicon.png',
     bundler: 'metro',
   },
-  plugins: ['expo-router', 'expo-font'],
+  plugins: [
+    'expo-router',
+    'expo-font',
+    [
+      'expo-image-picker',
+      {
+        photosPermission: 'This app needs access to your photos to add clothing items to your wardrobe.',
+      },
+    ],
+  ],
   experiments: {
     typedRoutes: true,
+  },
+  extra: {
+    supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
+    supabaseKey: process.env.EXPO_PUBLIC_SUPABASE_KEY,
   },
 });

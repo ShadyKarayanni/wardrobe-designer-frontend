@@ -11,12 +11,19 @@ class ApiClient {
   private baseUrl: string;
   private defaultHeaders: Record<string, string>;
   private authToken: string | null = null;
+  private onUnauthorized?: () => void;
+  private skipUnauthorizedEndpoints = ['/auth/signin', '/auth/signup', '/auth/signout'];
 
   constructor(baseUrl: string = BASE_URL) {
     this.baseUrl = baseUrl;
     this.defaultHeaders = {
       'Content-Type': 'application/json',
     };
+  }
+
+  // Set callback for 401 unauthorized responses
+  setOnUnauthorized(callback: () => void): void {
+    this.onUnauthorized = callback;
   }
 
   // Set auth token for authenticated requests
@@ -27,6 +34,11 @@ class ApiClient {
   // Get current auth token
   getAuthToken(): string | null {
     return this.authToken;
+  }
+
+  // Get base URL for multipart form uploads
+  getBaseUrl(): string {
+    return this.baseUrl;
   }
 
   // Build URL with query params
@@ -91,7 +103,16 @@ class ApiClient {
       const data = await response.json();
 
       if (!response.ok) {
-        throw this.createError(data.message || 'Request failed', response.status, data);
+        // Handle 401 Unauthorized - session expired (but not for auth endpoints)
+        const shouldHandleUnauthorized =
+          response.status === 401 &&
+          this.onUnauthorized &&
+          !this.skipUnauthorizedEndpoints.some((ep) => endpoint.includes(ep));
+
+        if (shouldHandleUnauthorized && this.onUnauthorized) {
+          this.onUnauthorized();
+        }
+        throw this.createError(data.message || data.detail || 'Request failed', response.status, data);
       }
 
       return {
