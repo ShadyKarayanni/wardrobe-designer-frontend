@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Alert } from 'react-native';
 import { Slot, useRouter } from 'expo-router';
 import * as Linking from 'expo-linking';
+import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { TamaguiProvider, Spinner, YStack } from 'tamagui';
@@ -172,6 +173,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar style="dark" />
       <SafeAreaProvider>
         <TamaguiProvider config={config} defaultTheme="light">
           <AuthProvider>

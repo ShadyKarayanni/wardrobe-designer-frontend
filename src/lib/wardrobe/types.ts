@@ -1,6 +1,19 @@
 // Item categories
 export type ItemCategory = 'tops' | 'bottoms' | 'shoes' | 'accessories';
 
+// Bulk upload types
+export type UploadStatus = 'pending' | 'uploading' | 'success' | 'error';
+
+export interface BulkUploadImage {
+  id: string;
+  uri: string;
+  type: string;
+  name: string;
+  status: UploadStatus;
+  error?: string;
+  result?: WardrobeItem;
+}
+
 export const CATEGORIES: { key: ItemCategory | 'all'; label: string }[] = [
   { key: 'all', label: 'All' },
   { key: 'tops', label: 'Tops' },

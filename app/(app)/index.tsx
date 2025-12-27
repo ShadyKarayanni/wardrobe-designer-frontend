@@ -13,6 +13,7 @@ import { PageContainer } from '@/components/layout/PageContainer';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AddItemSheet } from '@/components/wardrobe/AddItemSheet';
+import { BulkUploadScreen } from '@/components/wardrobe/BulkUploadScreen';
 import { FABMenuSheet } from '@/components/common/FABMenuSheet';
 import { AddEventSheet } from '@/components/events/AddEventSheet';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -304,6 +305,7 @@ export default function MainApp() {
   const [fabMenuOpen, setFabMenuOpen] = useState(false);
   const [addItemSheetOpen, setAddItemSheetOpen] = useState(false);
   const [addEventSheetOpen, setAddEventSheetOpen] = useState(false);
+  const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const refreshWardrobeRef = useRef<(() => void) | undefined>(undefined);
   const refreshScheduleRef = useRef<(() => void) | undefined>(undefined);
@@ -325,6 +327,15 @@ export default function MainApp() {
   const handleAddEvent = () => {
     setAddEventSheetOpen(true);
   };
+
+  const handleBulkUpload = () => {
+    setBulkUploadOpen(true);
+  };
+
+  const handleBulkUploadComplete = useCallback(() => {
+    setBulkUploadOpen(false);
+    refreshWardrobeRef.current?.();
+  }, []);
 
   const handleAddItemSuccess = useCallback(() => {
     setAddItemSheetOpen(false);
@@ -392,6 +403,7 @@ export default function MainApp() {
         onClose={() => setFabMenuOpen(false)}
         onAddEvent={handleAddEvent}
         onAddItem={handleAddItem}
+        onBulkUpload={handleBulkUpload}
       />
       <AddItemSheet
         isOpen={addItemSheetOpen}
@@ -402,6 +414,11 @@ export default function MainApp() {
         isOpen={addEventSheetOpen}
         onClose={() => setAddEventSheetOpen(false)}
         onSubmit={handleCreateEvent}
+      />
+      <BulkUploadScreen
+        isOpen={bulkUploadOpen}
+        onClose={() => setBulkUploadOpen(false)}
+        onComplete={handleBulkUploadComplete}
       />
       <SettingsDrawer isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </PageContainer>

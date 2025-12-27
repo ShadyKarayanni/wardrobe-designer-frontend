@@ -2,13 +2,14 @@ import { useCallback, useMemo, useRef, useEffect } from 'react';
 import { StyleSheet, Pressable } from 'react-native';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import { YStack, XStack, Text } from 'tamagui';
-import { Calendar, Shirt, ChevronRight } from '@tamagui/lucide-icons';
+import { Calendar, Shirt, ChevronRight, Images } from '@tamagui/lucide-icons';
 
 interface FABMenuSheetProps {
   isOpen: boolean;
   onClose: () => void;
   onAddEvent: () => void;
   onAddItem: () => void;
+  onBulkUpload: () => void;
 }
 
 interface MenuOptionProps {
@@ -31,9 +32,9 @@ function MenuOption({ icon, label, onPress }: MenuOptionProps) {
   );
 }
 
-export function FABMenuSheet({ isOpen, onClose, onAddEvent, onAddItem }: FABMenuSheetProps) {
+export function FABMenuSheet({ isOpen, onClose, onAddEvent, onAddItem, onBulkUpload }: FABMenuSheetProps) {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ['25%'], []);
+  const snapPoints = useMemo(() => ['35%'], []);
 
   // Handle sheet open/close via ref
   useEffect(() => {
@@ -67,6 +68,11 @@ export function FABMenuSheet({ isOpen, onClose, onAddEvent, onAddItem }: FABMenu
     setTimeout(() => onAddItem(), 100);
   };
 
+  const handleBulkUpload = () => {
+    onClose();
+    setTimeout(() => onBulkUpload(), 100);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -94,6 +100,11 @@ export function FABMenuSheet({ isOpen, onClose, onAddEvent, onAddItem }: FABMenu
             icon={<Shirt size={24} color="#333333" />}
             label="Add Wardrobe Item"
             onPress={handleAddItem}
+          />
+          <MenuOption
+            icon={<Images size={24} color="#333333" />}
+            label="Add Multiple Items"
+            onPress={handleBulkUpload}
           />
         </YStack>
       </BottomSheetView>

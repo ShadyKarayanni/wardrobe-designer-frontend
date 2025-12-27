@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import { View, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, Alert } from 'react-native';
 import { YStack, XStack, Text, Button, Input } from 'tamagui';
 import { ChevronLeft, ChevronRight, MapPin, Sparkles, AlertCircle, Lock, Shirt } from '@tamagui/lucide-icons';
@@ -73,6 +73,7 @@ export function ScheduleContent({ onRefreshReady, wardrobeItemCount, minItemsReq
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const { events, updateEvent, deleteEvent, refresh: refreshEvents } = useEvents();
 
+  const scrollViewRef = useRef<ScrollView>(null);
   const weekStartDate = useMemo(() => getWeekStartDate(weekOffset), [weekOffset]);
   const today = new Date();
 
@@ -143,6 +144,7 @@ export function ScheduleContent({ onRefreshReady, wardrobeItemCount, minItemsReq
 
     setGenerating(true);
     setError(null);
+    scrollViewRef.current?.scrollTo({ y: 0, animated: false });
 
     try {
       const startDate = getWeekStartDate(weekOffset).toISOString().split('T')[0];
@@ -428,6 +430,7 @@ export function ScheduleContent({ onRefreshReady, wardrobeItemCount, minItemsReq
 
       {/* Content */}
       <ScrollView
+        ref={scrollViewRef}
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         refreshControl={
