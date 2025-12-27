@@ -1,4 +1,4 @@
-import { FlatList, RefreshControl, StyleSheet, View, ActivityIndicator } from 'react-native';
+import { ScrollView, RefreshControl, StyleSheet, View, ActivityIndicator, useWindowDimensions } from 'react-native';
 import { WardrobeItemWithUrl } from '@/lib/wardrobe/types';
 import { ItemCard } from './ItemCard';
 import { EmptyState } from './EmptyState';
@@ -17,40 +17,20 @@ interface ItemGridProps {
 }
 
 const CARD_GAP = 12;
+const HORIZONTAL_PADDING = 16;
 
 export function ItemGrid({
   items,
   loading,
   refreshing,
-  hasMore,
   category,
   hasSearch,
   onRefresh,
-  onLoadMore,
   onItemPress,
   onItemLongPress,
 }: ItemGridProps) {
-  const renderItem = ({ item }: { item: WardrobeItemWithUrl }) => (
-    <ItemCard
-      item={item}
-      onPress={() => onItemPress(item)}
-      onLongPress={() => onItemLongPress(item)}
-    />
-  );
-
-  const renderFooter = () => {
-    if (!hasMore || items.length === 0) return null;
-    return (
-      <View style={styles.footer}>
-        <ActivityIndicator size="small" color="#333333" />
-      </View>
-    );
-  };
-
-  const renderEmpty = () => {
-    if (loading) return null;
-    return <EmptyState category={category} hasSearch={hasSearch} />;
-  };
+  const { width } = useWindowDimensions();
+  const cardWidth = (width - HORIZONTAL_PADDING * 2 - CARD_GAP) / 2;
 
   if (loading && items.length === 0) {
     return (
@@ -61,12 +41,8 @@ export function ItemGrid({
   }
 
   return (
-    <FlatList
-      data={items}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id}
-      numColumns={2}
-      columnWrapperStyle={styles.row}
+    <ScrollView
+      style={styles.scrollView}
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
       refreshControl={
@@ -76,28 +52,41 @@ export function ItemGrid({
           tintColor="#333333"
         />
       }
-      onEndReached={onLoadMore}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={renderFooter}
-      ListEmptyComponent={renderEmpty}
-    />
+    >
+      {items.length === 0 ? (
+        <EmptyState category={category} hasSearch={hasSearch} />
+      ) : (
+        <View style={styles.grid}>
+          {items.map((item) => (
+            <View key={item.id} style={[styles.itemWrapper, { width: cardWidth }]}>
+              <ItemCard
+                item={item}
+                onPress={() => onItemPress(item)}
+                onLongPress={() => onItemLongPress(item)}
+              />
+            </View>
+          ))}
+        </View>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   content: {
-    paddingHorizontal: 16,
+    paddingHorizontal: HORIZONTAL_PADDING,
     paddingBottom: 100,
     flexGrow: 1,
   },
-  row: {
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: CARD_GAP,
-    marginBottom: CARD_GAP,
   },
-  footer: {
-    paddingVertical: 20,
-    alignItems: 'center',
-  },
+  itemWrapper: {},
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',

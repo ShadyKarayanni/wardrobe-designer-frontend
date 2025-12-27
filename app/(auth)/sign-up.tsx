@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { YStack, Text, XStack, ScrollView } from 'tamagui';
+import { YStack, Text, XStack } from 'tamagui';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { AuthInput } from '@/components/auth/AuthInput';
 import { AuthButton } from '@/components/auth/AuthButton';
@@ -58,11 +58,7 @@ export default function SignUpScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-        >
-          <YStack flex={1} justifyContent="center" padding="$6" gap="$4">
+        <YStack flex={1} justifyContent="center" padding="$6" gap="$4">
             <YStack gap="$2" marginBottom="$6">
               <Text
                 fontSize={28}
@@ -122,7 +118,6 @@ export default function SignUpScreen() {
               </Pressable>
             </XStack>
           </YStack>
-        </ScrollView>
       </KeyboardAvoidingView>
     </PageContainer>
   );

@@ -5,14 +5,14 @@
 
 import { ApiError, ApiResponse, HttpMethod, RequestOptions } from './types';
 
-const BASE_URL = 'https://wardrobe-designer-production.up.railway.app';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://wardrobe-designer-production.up.railway.app';
 
 class ApiClient {
   private baseUrl: string;
   private defaultHeaders: Record<string, string>;
   private authToken: string | null = null;
   private onUnauthorized?: () => void;
-  private skipUnauthorizedEndpoints = ['/auth/signin', '/auth/signup', '/auth/signout'];
+  private skipUnauthorizedEndpoints = ['/auth/signin', '/auth/signup', '/auth/signout', '/protected'];
 
   constructor(baseUrl: string = BASE_URL) {
     this.baseUrl = baseUrl;

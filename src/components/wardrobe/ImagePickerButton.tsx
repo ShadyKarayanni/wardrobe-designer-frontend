@@ -7,9 +7,10 @@ interface ImagePickerButtonProps {
   image: SelectedImage | null;
   onPress: () => void;
   onClear: () => void;
+  label?: string;
 }
 
-export function ImagePickerButton({ image, onPress, onClear }: ImagePickerButtonProps) {
+export function ImagePickerButton({ image, onPress, onClear, label = 'Add photo' }: ImagePickerButtonProps) {
   if (image) {
     return (
       <View style={styles.previewContainer}>
@@ -29,7 +30,7 @@ export function ImagePickerButton({ image, onPress, onClear }: ImagePickerButton
     <Pressable style={styles.button} onPress={onPress}>
       <Camera size={32} color="#6A6A6A" />
       <Text fontSize={14} color="$textSecondary" marginTop="$2">
-        Add photo
+        {label}
       </Text>
     </Pressable>
   );
@@ -38,7 +39,7 @@ export function ImagePickerButton({ image, onPress, onClear }: ImagePickerButton
 const styles = StyleSheet.create({
   button: {
     width: 120,
-    height: 120,
+    aspectRatio: 1,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: '#E5E5E5',
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   },
   previewContainer: {
     width: 120,
-    height: 120,
+    aspectRatio: 1,
     borderRadius: 12,
     overflow: 'hidden',
     position: 'relative',

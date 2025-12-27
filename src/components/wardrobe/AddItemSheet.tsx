@@ -1,15 +1,13 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { StyleSheet, View, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { Text, YStack, XStack, Button, Spinner } from 'tamagui';
 import { X } from '@tamagui/lucide-icons';
 import { Pressable } from 'react-native';
 
-import { useImagePicker, SelectedImage } from '@/hooks/useImagePicker';
+import { useImagePicker } from '@/hooks/useImagePicker';
 import { wardrobeService } from '@/lib/wardrobe/wardrobeService';
-import { ItemCategory } from '@/lib/wardrobe/types';
 import { ImagePickerButton } from './ImagePickerButton';
-import { CategoryPicker } from './CategoryPicker';
 
 interface AddItemSheetProps {
   isOpen: boolean;
@@ -19,18 +17,12 @@ interface AddItemSheetProps {
 
 export function AddItemSheet({ isOpen, onClose, onSuccess }: AddItemSheetProps) {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState<ItemCategory | null>(null);
-  const [color, setColor] = useState('');
   const [loading, setLoading] = useState(false);
 
   const { image, showImagePicker, clearImage } = useImagePicker();
 
   // Reset form when closing
   const resetForm = useCallback(() => {
-    setName('');
-    setCategory(null);
-    setColor('');
     clearImage();
   }, [clearImage]);
 
@@ -49,32 +41,15 @@ export function AddItemSheet({ isOpen, onClose, onSuccess }: AddItemSheetProps) 
   }, [resetForm, onClose]);
 
   const handleSubmit = useCallback(async () => {
-    // Validation
-    if (!name.trim()) {
-      Alert.alert('Error', 'Please enter a name');
-      return;
-    }
-    if (!category) {
-      Alert.alert('Error', 'Please select a category');
-      return;
-    }
+    // Validation - only image is required, AI generates name/category/color
     if (!image) {
       Alert.alert('Error', 'Please add a photo');
-      return;
-    }
-    if (!color.trim()) {
-      Alert.alert('Error', 'Please enter a color');
       return;
     }
 
     setLoading(true);
     try {
-      await wardrobeService.createItem({
-        name: name.trim(),
-        category,
-        color: color.trim(),
-        image,
-      });
+      await wardrobeService.createItem({ image });
       resetForm();
       onSuccess();
     } catch (error) {
@@ -82,7 +57,7 @@ export function AddItemSheet({ isOpen, onClose, onSuccess }: AddItemSheetProps) 
     } finally {
       setLoading(false);
     }
-  }, [name, category, color, image, resetForm, onSuccess]);
+  }, [image, resetForm, onSuccess]);
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -128,51 +103,16 @@ export function AddItemSheet({ isOpen, onClose, onSuccess }: AddItemSheetProps) 
           {/* Image */}
           <YStack gap="$2">
             <Text fontSize={14} fontWeight="500" color="$text">
-              Photo *
+              Photo
             </Text>
             <ImagePickerButton
               image={image}
               onPress={showImagePicker}
               onClear={clearImage}
             />
-          </YStack>
-
-          {/* Name */}
-          <YStack gap="$2">
-            <Text fontSize={14} fontWeight="500" color="$text">
-              Name *
+            <Text fontSize={12} color="$textMuted" marginTop="$1">
+              AI will automatically detect item details
             </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g., Blue denim jacket"
-              placeholderTextColor="#6A6A6A"
-              value={name}
-              onChangeText={setName}
-              autoCapitalize="words"
-            />
-          </YStack>
-
-          {/* Category */}
-          <YStack gap="$2">
-            <Text fontSize={14} fontWeight="500" color="$text">
-              Category *
-            </Text>
-            <CategoryPicker value={category} onChange={setCategory} />
-          </YStack>
-
-          {/* Color */}
-          <YStack gap="$2">
-            <Text fontSize={14} fontWeight="500" color="$text">
-              Color *
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g., Navy blue"
-              placeholderTextColor="#6A6A6A"
-              value={color}
-              onChangeText={setColor}
-              autoCapitalize="words"
-            />
           </YStack>
 
           {/* Submit Button */}
@@ -180,7 +120,7 @@ export function AddItemSheet({ isOpen, onClose, onSuccess }: AddItemSheetProps) 
             onPress={handleSubmit}
             disabled={loading}
             backgroundColor="$accent"
-            height={52}
+            paddingVertical="$3"
             borderRadius={8}
             marginTop="$4"
             pressStyle={{ opacity: 0.9 }}
@@ -212,15 +152,5 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 20,
     paddingBottom: 40,
-  },
-  input: {
-    height: 52,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: '#1A1A1A',
   },
 });

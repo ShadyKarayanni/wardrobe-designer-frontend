@@ -177,12 +177,8 @@ export function ItemDetailSheet({
                   image={image}
                   onPress={showImagePicker}
                   onClear={clearImage}
+                  label="Update photo"
                 />
-                {!image && (
-                  <Text fontSize={12} color="$textMuted">
-                    Tap to change photo
-                  </Text>
-                )}
               </XStack>
             </YStack>
 
@@ -230,7 +226,7 @@ export function ItemDetailSheet({
                 backgroundColor="$background"
                 borderColor="$border"
                 borderWidth={1}
-                height={48}
+                paddingVertical="$3"
                 borderRadius={8}
               >
                 <Text color="$text" fontSize={16} fontWeight="500">
@@ -242,7 +238,7 @@ export function ItemDetailSheet({
                 onPress={handleSaveEdit}
                 disabled={loading}
                 backgroundColor="$accent"
-                height={48}
+                paddingVertical="$3"
                 borderRadius={8}
               >
                 {loading ? (
@@ -325,7 +321,7 @@ export function ItemDetailSheet({
                 backgroundColor="$background"
                 borderColor="$border"
                 borderWidth={1}
-                height={48}
+                paddingVertical="$3"
                 borderRadius={8}
               >
                 <XStack alignItems="center" gap="$2">
@@ -339,7 +335,7 @@ export function ItemDetailSheet({
                 flex={1}
                 onPress={onDelete}
                 backgroundColor="$error"
-                height={48}
+                paddingVertical="$3"
                 borderRadius={8}
               >
                 <XStack alignItems="center" gap="$2">
@@ -389,7 +385,7 @@ const styles = StyleSheet.create({
   },
   currentImage: {
     width: 120,
-    height: 120,
+    aspectRatio: 1,
     borderRadius: 12,
     overflow: 'hidden',
   },
@@ -398,12 +394,12 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   input: {
-    height: 52,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E5E5E5',
     borderRadius: 8,
     paddingHorizontal: 16,
+    paddingVertical: 14,
     fontSize: 16,
     color: '#1A1A1A',
   },

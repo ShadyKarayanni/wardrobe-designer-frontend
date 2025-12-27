@@ -83,14 +83,14 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
-    gap: 8,
+    paddingVertical: 12,
+    gap: 10,
     alignItems: 'center',
   },
   tab: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 24,
     marginRight: 8,
   },
   tabSelected: {
@@ -99,6 +99,6 @@ const styles = StyleSheet.create({
   tabUnselected: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#E5E5E5',
+    borderColor: '#E0E0E0',
   },
 });

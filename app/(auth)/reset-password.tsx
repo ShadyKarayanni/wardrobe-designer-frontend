@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { YStack, Text, ScrollView, Spinner, XStack } from 'tamagui';
+import { YStack, Text, Spinner, XStack } from 'tamagui';
 import { ArrowLeft } from '@tamagui/lucide-icons';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { AuthInput } from '@/components/auth/AuthInput';
@@ -172,11 +172,7 @@ export default function ResetPasswordScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-        >
-          <YStack flex={1} justifyContent="center" padding="$6" gap="$4">
+        <YStack flex={1} justifyContent="center" padding="$6" gap="$4">
             <YStack gap="$2" marginBottom="$6">
               <Text
                 fontSize={28}
@@ -215,7 +211,6 @@ export default function ResetPasswordScreen() {
               </AuthButton>
             </YStack>
           </YStack>
-        </ScrollView>
       </KeyboardAvoidingView>
     </PageContainer>
   );

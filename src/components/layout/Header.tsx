@@ -1,14 +1,17 @@
-import { XStack, Text, styled } from 'tamagui';
+import { XStack, Text, styled, View } from 'tamagui';
+import { Pressable } from 'react-native';
+import { Settings } from '@tamagui/lucide-icons';
 
 interface HeaderProps {
   title: string;
+  onSettingsPress?: () => void;
 }
 
 const HeaderContainer = styled(XStack, {
-  height: 56,
+  paddingVertical: '$3',
   paddingHorizontal: '$4',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'space-between',
   borderBottomWidth: 1,
   borderBottomColor: '$border',
   backgroundColor: '$background',
@@ -27,10 +30,22 @@ const HeaderTitle = styled(Text, {
   fontFamily: '$heading',
 });
 
-export function Header({ title }: HeaderProps) {
+const IconPlaceholder = styled(View, {
+  width: 24,
+});
+
+export function Header({ title, onSettingsPress }: HeaderProps) {
   return (
     <HeaderContainer>
+      {onSettingsPress ? (
+        <Pressable onPress={onSettingsPress} hitSlop={10}>
+          <Settings size={24} color="#4A4A4A" />
+        </Pressable>
+      ) : (
+        <IconPlaceholder />
+      )}
       <HeaderTitle>{title}</HeaderTitle>
+      <IconPlaceholder />
     </HeaderContainer>
   );
 }

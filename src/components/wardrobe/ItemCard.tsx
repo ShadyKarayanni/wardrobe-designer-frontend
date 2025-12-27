@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View, useWindowDimensions, Image } from 'react-native';
+import { Pressable, StyleSheet, View, Image } from 'react-native';
 import { Text } from 'tamagui';
 import Animated, {
   useAnimatedStyle,
@@ -15,13 +15,7 @@ interface ItemCardProps {
   onLongPress: () => void;
 }
 
-const CARD_GAP = 12;
-const HORIZONTAL_PADDING = 16;
-
 export function ItemCard({ item, onPress, onLongPress }: ItemCardProps) {
-  const { width } = useWindowDimensions();
-  const cardWidth = (width - HORIZONTAL_PADDING * 2 - CARD_GAP) / 2;
-
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -43,9 +37,9 @@ export function ItemCard({ item, onPress, onLongPress }: ItemCardProps) {
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       delayLongPress={500}
-      style={[styles.container, { width: cardWidth }, animatedStyle]}
+      style={[styles.container, animatedStyle]}
     >
-      <View style={[styles.imageContainer, { height: cardWidth }]}>
+      <View style={styles.imageContainer}>
         {item.signedUrl ? (
           <Image
             source={{ uri: item.signedUrl }}
@@ -59,7 +53,7 @@ export function ItemCard({ item, onPress, onLongPress }: ItemCardProps) {
       <View style={styles.info}>
         <Text
           fontSize={14}
-          fontWeight="500"
+          fontWeight="600"
           color="$text"
           numberOfLines={1}
           ellipsizeMode="tail"
@@ -69,7 +63,7 @@ export function ItemCard({ item, onPress, onLongPress }: ItemCardProps) {
         {item.color && (
           <View style={styles.colorRow}>
             <View style={[styles.colorDot, { backgroundColor: item.color }]} />
-            <Text fontSize={12} color="$textSecondary" numberOfLines={1}>
+            <Text fontSize={13} color="$textSecondary" numberOfLines={1}>
               {item.color}
             </Text>
           </View>
@@ -82,16 +76,17 @@ export function ItemCard({ item, onPress, onLongPress }: ItemCardProps) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: 16,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
     elevation: 3,
   },
   imageContainer: {
-    backgroundColor: '#F0F0F0',
+    aspectRatio: 1,
+    backgroundColor: '#F5F5F5',
   },
   image: {
     width: '100%',
@@ -100,22 +95,22 @@ const styles = StyleSheet.create({
   placeholder: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#E8E8E8',
+    backgroundColor: '#EBEBEB',
   },
   info: {
-    padding: 10,
-    gap: 4,
+    padding: 12,
+    gap: 6,
   },
   colorRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
   },
   colorDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#E5E5E5',
+    borderColor: '#E0E0E0',
   },
 });

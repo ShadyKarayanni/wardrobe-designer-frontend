@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { YStack, Text, XStack, ScrollView } from 'tamagui';
+import { YStack, Text, XStack } from 'tamagui';
 import { ArrowLeft } from '@tamagui/lucide-icons';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { AuthInput } from '@/components/auth/AuthInput';
@@ -26,10 +26,18 @@ export default function ForgotPasswordScreen() {
       await requestPasswordReset(email);
       setSent(true);
     } catch (error) {
-      Alert.alert(
-        'Error',
-        error instanceof Error ? error.message : 'An error occurred'
-      );
+      // Check for rate limiting (429 Too Many Requests)
+      if (error && typeof error === 'object' && 'status' in error && error.status === 429) {
+        Alert.alert(
+          'Too Many Requests',
+          'You have requested too many password resets. Please wait a few minutes before trying again.'
+        );
+      } else {
+        Alert.alert(
+          'Error',
+          error instanceof Error ? error.message : 'An error occurred'
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -84,11 +92,7 @@ export default function ForgotPasswordScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-        >
-          <YStack flex={1} justifyContent="center" padding="$6" gap="$4">
+        <YStack flex={1} justifyContent="center" padding="$6" gap="$4">
             <YStack gap="$2" marginBottom="$6">
               <Text
                 fontSize={28}
@@ -132,7 +136,6 @@ export default function ForgotPasswordScreen() {
               </Pressable>
             </XStack>
           </YStack>
-        </ScrollView>
       </KeyboardAvoidingView>
     </PageContainer>
   );

@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useWardrobeItems } from '@/lib/wardrobe/useWardrobeItems';
-import { useSignedUrls } from '@/lib/wardrobe/useSignedUrls';
 import { wardrobeService } from '@/lib/wardrobe/wardrobeService';
 import {
   ItemCategory,
@@ -42,8 +41,13 @@ export function WardrobeContent({ onRefreshReady }: WardrobeContentProps) {
     removeItem,
   } = useWardrobeItems();
 
-  // Get signed URLs
-  const { itemsWithUrls } = useSignedUrls(items);
+  // Map items to include signedUrl from signed_url (API now returns it directly)
+  const itemsWithUrls: WardrobeItemWithUrl[] = useMemo(() => {
+    return items.map((item) => ({
+      ...item,
+      signedUrl: item.signed_url,
+    }));
+  }, [items]);
 
   // Client-side filtering for search (name & color) and sorting
   const filteredItems = useMemo(() => {

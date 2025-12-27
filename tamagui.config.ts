@@ -1,8 +1,9 @@
 import { createAnimations } from '@tamagui/animations-react-native';
-import { createInterFont } from '@tamagui/font-inter';
+import { createFont } from 'tamagui';
 import { shorthands } from '@tamagui/shorthands';
 import { themes, tokens as defaultTokens } from '@tamagui/themes';
 import { createTamagui, createTokens } from 'tamagui';
+import { Platform } from 'react-native';
 
 // Custom animations - subtle and gentle
 const animations = createAnimations({
@@ -33,8 +34,15 @@ const animations = createAnimations({
   },
 });
 
-// Inter font
-const headingFont = createInterFont({
+// System font - uses San Francisco on iOS, Roboto on Android
+const systemFont = Platform.select({
+  ios: 'System',
+  android: 'Roboto',
+  default: 'System',
+});
+
+const headingFont = createFont({
+  family: systemFont,
   size: {
     1: 12,
     2: 14,
@@ -47,40 +55,70 @@ const headingFont = createInterFont({
     9: 40,
     10: 48,
   },
+  lineHeight: {
+    1: 16,
+    2: 18,
+    3: 22,
+    4: 24,
+    5: 28,
+    6: 32,
+    7: 36,
+    8: 40,
+    9: 48,
+    10: 56,
+  },
   weight: {
     4: '400',
     5: '500',
     6: '600',
     7: '700',
   },
-  face: {
-    400: { normal: 'Inter' },
-    500: { normal: 'InterMedium' },
-    600: { normal: 'InterSemiBold' },
-    700: { normal: 'InterBold' },
+  letterSpacing: {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: -0.5,
+    7: -0.5,
+    8: -0.5,
+    9: -1,
+    10: -1,
   },
 });
 
-const bodyFont = createInterFont(
-  {
-    size: {
-      1: 12,
-      2: 14,
-      3: 16,
-      4: 18,
-      5: 20,
-      6: 24,
-    },
-    weight: {
-      4: '400',
-      5: '500',
-      6: '600',
-    },
+const bodyFont = createFont({
+  family: systemFont,
+  size: {
+    1: 12,
+    2: 14,
+    3: 16,
+    4: 18,
+    5: 20,
+    6: 24,
   },
-  {
-    sizeLineHeight: (size) => Math.round(size * 1.5),
-  }
-);
+  lineHeight: {
+    1: 18,
+    2: 21,
+    3: 24,
+    4: 27,
+    5: 30,
+    6: 36,
+  },
+  weight: {
+    4: '400',
+    5: '500',
+    6: '600',
+  },
+  letterSpacing: {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+  },
+});
 
 // Custom tokens - eye-safe black & white palette
 const customTokens = createTokens({

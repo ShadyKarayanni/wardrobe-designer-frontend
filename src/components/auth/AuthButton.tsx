@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 
 const StyledButton = styled(Button, {
   backgroundColor: '$accent',
-  height: 52,
+  paddingVertical: '$2',
   borderRadius: 8,
 
   pressStyle: {

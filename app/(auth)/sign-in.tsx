@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, Pressable } from 'react-native';
 import { Link } from 'expo-router';
-import { YStack, Text, XStack, ScrollView } from 'tamagui';
+import { YStack, Text, XStack, View } from 'tamagui';
+import { Eye, EyeOff } from '@tamagui/lucide-icons';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { AuthInput } from '@/components/auth/AuthInput';
 import { AuthButton } from '@/components/auth/AuthButton';
@@ -10,6 +11,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 export default function SignInScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
 
@@ -45,11 +47,7 @@ export default function SignInScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-        >
-          <YStack flex={1} justifyContent="center" padding="$6" gap="$4">
+        <YStack flex={1} justifyContent="center" padding="$6" gap="$4">
             <YStack gap="$2" marginBottom="$6">
               <Text
                 fontSize={28}
@@ -75,13 +73,33 @@ export default function SignInScreen() {
                 autoCorrect={false}
               />
 
-              <AuthInput
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                autoComplete="password"
-              />
+              <View position="relative">
+                <AuthInput
+                  placeholder="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  autoComplete="password"
+                  paddingRight={50}
+                />
+                <Pressable
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: 16,
+                    top: 0,
+                    bottom: 0,
+                    justifyContent: 'center',
+                  }}
+                  hitSlop={10}
+                >
+                  {showPassword ? (
+                    <EyeOff size={20} color="#6A6A6A" />
+                  ) : (
+                    <Eye size={20} color="#6A6A6A" />
+                  )}
+                </Pressable>
+              </View>
 
               <AuthButton onPress={handleSignIn} loading={loading}>
                 <Text color="$background" fontSize={16} fontWeight="600">
@@ -109,7 +127,6 @@ export default function SignInScreen() {
               </Link>
             </XStack>
           </YStack>
-        </ScrollView>
       </KeyboardAvoidingView>
     </PageContainer>
   );

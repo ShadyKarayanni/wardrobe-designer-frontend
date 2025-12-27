@@ -54,14 +54,10 @@ export const wardrobeService = {
 
   /**
    * Create a new item (multipart/form-data)
+   * Only image is required - AI generates name/category/color
    */
   async createItem(data: CreateItemRequest): Promise<WardrobeItem> {
     const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('category', data.category);
-    if (data.color) {
-      formData.append('color', data.color);
-    }
     formData.append('image', {
       uri: data.image.uri,
       type: data.image.type,

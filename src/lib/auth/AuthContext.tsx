@@ -4,6 +4,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  useRef,
   ReactNode,
 } from 'react';
 import { Alert } from 'react-native';
@@ -13,6 +14,10 @@ import { authService } from './authService';
 import { supabase } from '../supabase/client';
 import { api } from '../api/client';
 import { AuthContextType, AuthUser, SignInRequest, SignUpRequest } from './types';
+import { clearWardrobeItemsCache } from '../wardrobe/useWardrobeItems';
+import { clearSignedUrlCache } from '../wardrobe/useSignedUrls';
+import { clearScheduleCache } from '@/components/schedule/ScheduleContent';
+import { clearEventsCache } from '../events/useEvents';
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -33,15 +38,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const segments = useSegments();
+  const isHandlingInvalidSession = useRef(false);
 
   const handleInvalidSession = useCallback(async () => {
+    // Prevent duplicate alerts from multiple 401 responses
+    if (isHandlingInvalidSession.current) return;
+    isHandlingInvalidSession.current = true;
+
     await tokenStorage.clearTokens();
     api.setAuthToken(null);
+    clearWardrobeItemsCache();
+    clearSignedUrlCache();
+    clearScheduleCache();
+    clearEventsCache();
     setUser(null);
     Alert.alert(
       'Session Expired',
       'Your session has expired. Please sign in again.',
-      [{ text: 'OK', onPress: () => router.replace('/(auth)/sign-in') }]
+      [{ text: 'OK', onPress: () => {
+        isHandlingInvalidSession.current = false;
+        router.replace('/(auth)/sign-in');
+      }}]
     );
   }, [router]);
 
@@ -164,6 +181,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } finally {
       await tokenStorage.clearTokens();
       api.setAuthToken(null);
+      // Clear cached data
+      clearWardrobeItemsCache();
+      clearSignedUrlCache();
+      clearScheduleCache();
+      clearEventsCache();
       setUser(null);
     }
   }, []);

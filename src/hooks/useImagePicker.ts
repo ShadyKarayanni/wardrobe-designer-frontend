@@ -65,8 +65,10 @@ export function useImagePicker(): UseImagePickerResult {
     if (!hasPermission) return;
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsEditing: true,
+      allowsMultipleSelection: false,
+      selectionLimit: 1,
       aspect: [1, 1],
       quality: 0.8,
     });

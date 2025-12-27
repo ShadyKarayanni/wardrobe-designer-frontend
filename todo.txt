@@ -1,0 +1,1 @@
+- editing photo doesnt work (delete/change)
